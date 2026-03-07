@@ -3,43 +3,42 @@ import { useState, useEffect } from "react";
 import { Search, Menu, X } from "lucide-react";
 
 
-// Aushadham logo — matches Figma: capsule with floating dots
+// Aushadham logo — matches provided image: capsule + dots above, AUSHADHAM text below
 function AushadhamLogo() {
     return (
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex flex-col items-center gap-0.5 shrink-0">
             <svg
-                width="56"
-                height="44"
-                viewBox="0 0 56 44"
+                width="68"
+                height="46"
+                viewBox="0 0 68 46"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
-                {/* Floating dots above capsule — varying sizes like the Figma design */}
-                <circle cx="15" cy="13" r="2.2" fill="#228573" />
-                <circle cx="22" cy="7"  r="3.4" fill="#228573" />
-                <circle cx="30" cy="4"  r="2.6" fill="#228573" />
-                <circle cx="38" cy="8"  r="2.0" fill="#228573" />
-                <circle cx="43" cy="14" r="1.5" fill="#228573" opacity="0.7" />
+                {/* 4 floating dots above the capsule — clustered above the left-center area */}
+                <circle cx="22" cy="8"  r="2.8" fill="#228573" />
+                <circle cx="30" cy="3"  r="3.8" fill="#228573" />
+                <circle cx="39" cy="5"  r="2.4" fill="#228573" />
+                <circle cx="46" cy="11" r="1.8" fill="#228573" opacity="0.75" />
 
-                {/* Capsule — left teal half */}
+                {/* Capsule left half — teal */}
                 <path
-                    d="M28 21 L14 21 C8.477 21 4 25.477 4 31 C4 36.523 8.477 41 14 41 L28 41 Z"
+                    d="M34 18 H16 C9.373 18 4 23.373 4 30 C4 36.627 9.373 42 16 42 H34 Z"
                     fill="#228573"
                 />
-                {/* Capsule — right white/gray half */}
+                {/* Capsule right half — light gray/white */}
                 <path
-                    d="M28 21 L42 21 C47.523 21 52 25.477 52 31 C52 36.523 47.523 41 42 41 L28 41 Z"
-                    fill="white"
-                    stroke="#b0b8c1"
-                    strokeWidth="1.5"
+                    d="M34 18 H52 C58.627 18 64 23.373 64 30 C64 36.627 58.627 42 52 42 H34 Z"
+                    fill="#e8e8e8"
+                    stroke="#c8c8c8"
+                    strokeWidth="1"
                 />
-                {/* Center divider */}
-                <line x1="28" y1="20" x2="28" y2="42" stroke="white" strokeWidth="1.8" />
+                {/* Center dividing line */}
+                <line x1="34" y1="17" x2="34" y2="43" stroke="#ffffff" strokeWidth="2" />
             </svg>
 
             <span
-                className="font-extrabold tracking-widest uppercase hidden sm:inline"
-                style={{ color: "#228573", fontSize: "14px", letterSpacing: "0.14em" }}
+                className="font-extrabold tracking-widest uppercase"
+                style={{ color: "#1f6f5a", fontSize: "13px", letterSpacing: "0.18em" }}
             >
                 AUSHADHAM
             </span>
