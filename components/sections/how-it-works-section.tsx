@@ -97,7 +97,7 @@ export default function HowItWorksSection() {
                     <SectionHeading title="How Aushadham works" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {steps.map((step, i) => (
                         <div
                             key={step.title}

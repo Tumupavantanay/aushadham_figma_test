@@ -1,37 +1,10 @@
 import SectionHeading from "@/components/ui/section-heading";
 import DoctorCard from "@/components/cards/doctor-card";
+import { getDoctors } from "@/lib/data/doctors";
 
-const doctors = [
-    {
-        name: "Dr. Himadri Chaudary",
-        specialization: "Ayurveda Practitioner (BAMS, MD)",
-        experience: "10 Yrs Experience",
-        rating: 4.9,
-        avatarInitials: "HC",
-        avatarColor: "#228573",
-        specialties: ["Nutrition", "Digestion", "Stress Relief", "Skin Care", "Weight Loss"],
-    },
-    {
-        name: "Dr. Priya Nair",
-        specialization: "Ayurveda Practitioner (BAMS, MD)",
-        experience: "8 Yrs Experience",
-        rating: 4.9,
-        avatarInitials: "PN",
-        avatarColor: "#3aa692",
-        specialties: ["Women's Health", "Hormonal Balance", "Detox", "Joint Pain", "Sleep"],
-    },
-    {
-        name: "Dr. Anand Sharma",
-        specialization: "Ayurveda Specialist (BAMS, PhD)",
-        experience: "12 Yrs Experience",
-        rating: 4.9,
-        avatarInitials: "AS",
-        avatarColor: "#065b4b",
-        specialties: ["Diabetes", "Hypertension", "Immunity", "Respiratory", "Liver Care"],
-    },
-];
+export default async function ExpertsSection() {
+    const doctors = await getDoctors();
 
-export default function ExpertsSection() {
     return (
         <section id="experts" className="py-20 bg-white">
             <div className="max-w-[1440px] mx-auto px-6 lg:px-[92px]">
@@ -41,7 +14,7 @@ export default function ExpertsSection() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
                     {doctors.map((doc) => (
-                        <DoctorCard key={doc.name} {...doc} />
+                        <DoctorCard key={doc.id} {...doc} />
                     ))}
                 </div>
 
