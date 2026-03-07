@@ -97,7 +97,7 @@ export default function HowItWorksSection() {
                     <SectionHeading title="How Aushadham works" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {steps.map((step, i) => (
                         <div
                             key={step.title}
@@ -107,19 +107,20 @@ export default function HowItWorksSection() {
                                 transform: "translateY(20px)",
                                 transition: `opacity 0.6s ease-out ${i * 0.08}s, transform 0.6s ease-out ${i * 0.08}s`,
                             }}
-                            className="group flex items-start gap-5 p-6 rounded-2xl border border-[#e8f5f2] bg-white hover:bg-[#f0faf7] hover:border-[#3aa692] transition-colors duration-200 card-hover"
                         >
-                            <div className="shrink-0 w-14 h-14 rounded-full bg-[#e8f5f2] group-hover:bg-[#d1ece6] flex items-center justify-center transition-colors duration-200">
-                                {step.icon}
-                            </div>
-                            <div className="flex flex-col gap-1.5">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xs font-bold text-[#3aa692] bg-[#e8f5f2] px-2 py-0.5 rounded-full">
-                                        Step {i + 1}
-                                    </span>
+                            <div className="group flex items-start gap-5 p-6 rounded-2xl border border-[#e8f5f2] bg-white hover:bg-[#f0faf7] hover:border-[#3aa692] hover:scale-[1.05] transition-all duration-300 ease-out card-hover h-full">
+                                <div className="shrink-0 w-14 h-14 rounded-full bg-[#e8f5f2] group-hover:bg-[#d1ece6] flex items-center justify-center transition-colors duration-200">
+                                    {step.icon}
                                 </div>
-                                <h3 className="text-[#065b4b] font-bold text-[16px] leading-snug">{step.title}</h3>
-                                <p className="text-[#065b4b]/60 text-sm leading-relaxed">{step.description}</p>
+                                <div className="flex flex-col gap-1.5">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs font-bold text-[#3aa692] bg-[#e8f5f2] px-2 py-0.5 rounded-full">
+                                            Step {i + 1}
+                                        </span>
+                                    </div>
+                                    <h3 className="text-[#065b4b] font-bold text-[16px] leading-snug">{step.title}</h3>
+                                    <p className="text-[#065b4b]/60 text-sm leading-relaxed">{step.description}</p>
+                                </div>
                             </div>
                         </div>
                     ))}

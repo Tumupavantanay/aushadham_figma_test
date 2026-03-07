@@ -3,52 +3,38 @@ import { useState, useEffect } from "react";
 import { Search, Menu, X } from "lucide-react";
 
 
-// Aushadham logo — pixel-faithful reproduction of Figma node 9:2232
+// Aushadham logo — matches Figma: capsule with floating dots
 function AushadhamLogo() {
     return (
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0">
             <svg
-                width="60"
-                height="52"
-                viewBox="0 0 60 52"
+                width="56"
+                height="44"
+                viewBox="0 0 56 44"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
-                {/* ── Floating medical icon bubbles above capsule ── */}
-                {/* Stethoscope bubble */}
-                <circle cx="12" cy="11" r="6.5" fill="#228573" />
-                <path d="M9.5 10 C9.5 8 11 7 12 7 C13 7 14.5 8 14.5 10 C14.5 12 13 13 12 13" stroke="white" strokeWidth="1.1" fill="none" strokeLinecap="round" />
-                <circle cx="12" cy="14" r="1.2" fill="white" />
+                {/* Floating dots above capsule — varying sizes like the Figma design */}
+                <circle cx="15" cy="13" r="2.2" fill="#228573" />
+                <circle cx="22" cy="7"  r="3.4" fill="#228573" />
+                <circle cx="30" cy="4"  r="2.6" fill="#228573" />
+                <circle cx="38" cy="8"  r="2.0" fill="#228573" />
+                <circle cx="43" cy="14" r="1.5" fill="#228573" opacity="0.7" />
 
-                {/* Pill bubble */}
-                <circle cx="24" cy="6" r="6.5" fill="#228573" />
-                <rect x="21" y="4.5" width="6" height="3" rx="1.5" fill="white" opacity="0.9" />
-
-                {/* Lens/scope bubble */}
-                <circle cx="37" cy="9" r="6.5" fill="#228573" />
-                <circle cx="37" cy="9" r="3" fill="none" stroke="white" strokeWidth="1.2" />
-                <line x1="37" y1="6.2" x2="37" y2="3.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
-
-                {/* Leaf/herb bubble */}
-                <circle cx="49" cy="14" r="6" fill="#228573" />
-                <path d="M46.5 15.5 Q49 11.5 51.5 15.5 Q49 17 46.5 15.5Z" fill="white" opacity="0.9" />
-                <line x1="49" y1="15.5" x2="49" y2="18.5" stroke="white" strokeWidth="1" strokeLinecap="round" />
-
-                {/* ── Capsule body ── */}
-                {/* Green left half */}
+                {/* Capsule — left teal half */}
                 <path
-                    d="M30 21 L15 21 C9.477 21 5 25.477 5 31 C5 36.523 9.477 41 15 41 L30 41 Z"
+                    d="M28 21 L14 21 C8.477 21 4 25.477 4 31 C4 36.523 8.477 41 14 41 L28 41 Z"
                     fill="#228573"
                 />
-                {/* White right half */}
+                {/* Capsule — right white/gray half */}
                 <path
-                    d="M30 21 L45 21 C50.523 21 55 25.477 55 31 C55 36.523 50.523 41 45 41 L30 41 Z"
+                    d="M28 21 L42 21 C47.523 21 52 25.477 52 31 C52 36.523 47.523 41 42 41 L28 41 Z"
                     fill="white"
-                    stroke="#9ca3af"
+                    stroke="#b0b8c1"
                     strokeWidth="1.5"
                 />
-                {/* Centre dividing line */}
-                <line x1="30" y1="20" x2="30" y2="42" stroke="white" strokeWidth="2" />
+                {/* Center divider */}
+                <line x1="28" y1="20" x2="28" y2="42" stroke="white" strokeWidth="1.8" />
             </svg>
 
             <span

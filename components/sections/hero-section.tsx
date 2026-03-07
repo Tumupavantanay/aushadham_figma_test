@@ -1,7 +1,7 @@
 "use client";
 // Figma illustration asset (node 9:2714)
 // Inline SVG — no external dependency, matches Figma design: patient + doctor consultation + medical items
-import { ArrowRight, Upload } from "lucide-react";
+import { ArrowRight, Upload, CalendarCheck } from "lucide-react";
 import Link from "next/link";
 
 // Doctor consultation illustration — matches Figma node 9:2714
@@ -157,14 +157,23 @@ export default function HeroSection() {
                             Learn more →
                         </Link>
 
-                        {/* Primary CTA */}
-                        <div className="mt-12">
+                        {/* CTAs — stacked vertically with generous spacing */}
+                        <div className="mt-12 flex flex-col items-start gap-5">
                             <Link
                                 href="/upload"
                                 className="group inline-flex items-center gap-3 px-8 py-4 text-white text-lg font-semibold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:bg-[#065b4b] bg-[#228573]"
                             >
                                 <Upload size={20} />
                                 Upload Your Reports Now
+                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+
+                            <Link
+                                href="/book-appointment"
+                                className="group inline-flex items-center gap-3 px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300 border-2 border-[#228573] text-[#228573] hover:bg-[#228573] hover:text-white hover:-translate-y-0.5"
+                            >
+                                <CalendarCheck size={20} />
+                                Book an Appointment
                                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
@@ -192,16 +201,9 @@ export default function HeroSection() {
                                     Connect With Doctors&nbsp;
                                     <span style={{ color: "#7dd8c9" }}>Direct Consult Online</span>
                                 </h3>
-                                <p className="text-sm leading-relaxed mt-1 mb-3" style={{ color: "rgba(255,255,255,0.7)" }}>
+                                <p className="text-sm leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.7)" }}>
                                     Skip the waiting room. Book a Video Call or In-Clinic visit at your convenience.
                                 </p>
-                                <Link
-                                    href="/book-appointment"
-                                    className="block w-full py-2.5 text-white text-sm font-semibold rounded-full text-center transition-all duration-200 hover:opacity-90"
-                                    style={{ backgroundColor: "#3aa692" }}
-                                >
-                                    Book an Appointment
-                                </Link>
                             </div>
                         </div>
 

@@ -1,17 +1,21 @@
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 import Link from "next/link";
 
-// Reusable pill logo for footer
+// Reusable pill logo for footer — matches Figma design
 function FooterLogo() {
     return (
-        <svg width="60" height="38" viewBox="0 0 80 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M40 4 L18 4 C9.163 4 2 11.163 2 20 C2 28.837 9.163 36 18 36 L40 36 L40 4Z" fill="#228573" />
-            <path d="M40 4 L62 4 C70.837 4 78 11.163 78 20 C78 28.837 70.837 36 62 36 L40 36 L40 4Z" fill="white" stroke="#9ca3af" strokeWidth="2.5" />
-            <line x1="40" y1="2" x2="40" y2="38" stroke="white" strokeWidth="2" />
-            {/* Mini icons */}
-            <circle cx="30" cy="0" r="4" fill="#228573" />
-            <circle cx="38" cy="-5" r="4" fill="#228573" />
-            <circle cx="46" cy="-1" r="4" fill="#228573" />
+        <svg width="56" height="44" viewBox="0 0 56 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Floating dots */}
+            <circle cx="15" cy="13" r="2.2" fill="#7dd8c9" />
+            <circle cx="22" cy="7"  r="3.4" fill="#7dd8c9" />
+            <circle cx="30" cy="4"  r="2.6" fill="#7dd8c9" />
+            <circle cx="38" cy="8"  r="2.0" fill="#7dd8c9" />
+            <circle cx="43" cy="14" r="1.5" fill="#7dd8c9" opacity="0.7" />
+            {/* Left teal half */}
+            <path d="M28 21 L14 21 C8.477 21 4 25.477 4 31 C4 36.523 8.477 41 14 41 L28 41 Z" fill="#3aa692" />
+            {/* Right translucent half */}
+            <path d="M28 21 L42 21 C47.523 21 52 25.477 52 31 C52 36.523 47.523 41 42 41 L28 41 Z" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
+            <line x1="28" y1="20" x2="28" y2="42" stroke="rgba(255,255,255,0.6)" strokeWidth="1.8" />
         </svg>
     );
 }
