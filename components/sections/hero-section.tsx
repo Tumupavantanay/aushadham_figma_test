@@ -152,7 +152,7 @@ export default function HeroSection() {
     return (
         <section ref={containerRef} id="hero" className="relative overflow-hidden" style={{ background: "linear-gradient(175deg, #e8f5f2 0%, #f0faf7 45%, #ffffff 80%)" }}>
             {/* Soft background blob */}
-            <div className="absolute top-0 right-0 w-[600px] h-[420px] md:h-[500px] opacity-15 pointer-events-none overflow-hidden">
+            <div className="absolute top-0 right-0 w-[600px] h-[420px] md:h-[500px] opacity-15 pointer-events-none">
                 <svg viewBox="0 0 600 500" fill="none">
                     <ellipse cx="400" cy="200" rx="320" ry="260" fill="#3aa692" />
                 </svg>
@@ -179,7 +179,7 @@ export default function HeroSection() {
                         Aushadham allows you to store your medical history and reports in your profile for no additional cost.
                     </p>
 
-                    <div className="flex flex-col gap-3 md:gap-6 -mt-8 md:mt-0">
+                    <div className="flex flex-col gap-3 md:gap-6 mt-2 md:mt-0">
                         <Link
                             href="/upload"
                             className="hero-btn group inline-flex items-center gap-3 px-8 py-4 text-white text-[17px] font-semibold rounded-full w-fit transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
