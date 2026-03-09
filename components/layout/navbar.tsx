@@ -93,9 +93,9 @@ export default function Navbar() {
         // Also watch scroll position to set "hero" when at the very top
         const handleScroll = () => {
             if (window.scrollY < 120) setActive("hero");
-            // Hide bottom bar when near the footer (within 80px of page bottom)
+            // Hide bottom bar when footer starts coming into view (400px before page bottom)
             const distFromBottom = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
-            setAtBottom(distFromBottom < 80);
+            setAtBottom(distFromBottom < 400);
         };
         window.addEventListener("scroll", handleScroll, { passive: true });
 
@@ -209,27 +209,32 @@ export default function Navbar() {
 
         {/* ── MOBILE BOTTOM NAV BAR ── */}
         <div
-            className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 transition-opacity duration-300 ${
-                atBottom ? "opacity-0 pointer-events-none" : "opacity-100"
+            className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-700 ease-in-out ${
+                atBottom ? "opacity-0 pointer-events-none translate-y-2" : "opacity-100 translate-y-0"
             }`}
             style={{ backgroundColor: "#1f5f4a" }}
         >
-            {/* Find Doctors link */}
-            <button
-                onClick={() => scrollToSection("experts")}
-                className={`text-sm font-semibold transition-colors ${
-                    active === "experts" ? "text-[#7dd8c9]" : "text-white/80 hover:text-white"
-                }`}
-            >
-                Find Doctors
-            </button>
+            {/* All nav links */}
+            <div className="flex items-center gap-4">
+                {navLinks.map((link) => (
+                    <button
+                        key={link.label}
+                        onClick={() => scrollToSection(link.sectionId)}
+                        className={`text-[11px] font-semibold transition-colors whitespace-nowrap ${
+                            active === link.sectionId ? "text-[#7dd8c9]" : "text-white/70 hover:text-white"
+                        }`}
+                    >
+                        {link.label}
+                    </button>
+                ))}
+            </div>
 
             {/* Search icon */}
             <button
                 aria-label="Search"
-                className="text-white/80 hover:text-white transition-colors"
+                className="text-white/80 hover:text-white transition-colors ml-3 shrink-0"
             >
-                <Search size={22} />
+                <Search size={20} />
             </button>
         </div>
         </>
