@@ -151,12 +151,11 @@ export default function HeroSection() {
 
     return (
         <section ref={containerRef} id="hero" className="relative overflow-hidden" style={{ background: "linear-gradient(175deg, #e8f5f2 0%, #f0faf7 45%, #ffffff 80%)" }}>
-            {/* Soft background blob */}
-            <div className="absolute top-0 right-0 w-[600px] h-[420px] md:h-[500px] opacity-15 pointer-events-none">
-                <svg viewBox="0 0 600 500" fill="none">
-                    <ellipse cx="400" cy="200" rx="320" ry="260" fill="#3aa692" />
-                </svg>
-            </div>
+            {/* Soft background blob — true circle so it never clips into a rectangle */}
+            <div
+                className="absolute rounded-full pointer-events-none opacity-15 top-[-80px] right-[-80px] w-[280px] h-[280px] md:top-[-120px] md:right-[-120px] md:w-[700px] md:h-[700px]"
+                style={{ backgroundColor: "#3aa692" }}
+            />
 
             {/* ── BLOCK 1: Headline + Upload CTA ── */}
             <div className="max-w-[1440px] mx-auto px-6 lg:px-[99px] pt-10 md:pt-20 pb-16 relative z-10">

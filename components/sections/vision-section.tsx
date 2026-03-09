@@ -144,39 +144,86 @@ function VisionCard({ card }: { card: typeof visionCards[number] }) {
 }
 
 export default function VisionSection() {
+    const containerRef = useRef<HTMLDivElement>(null);
     const trackRef = useRef<HTMLDivElement>(null);
-    const animRef = useRef<gsap.core.Tween | null>(null);
+    // Single ref object to avoid stale closure issues
+    const state = useRef({ paused: false, dragging: false, startX: 0, startScroll: 0 });
 
     useEffect(() => {
-        const track = trackRef.current;
-        if (!track) return;
+        const c = containerRef.current;
+        const t = trackRef.current;
+        if (!c || !t) return;
 
-        // Marquee: animate from 0 → -50% (one full set width), then loop seamlessly
-        const anim = gsap.fromTo(
-            track,
-            { xPercent: 0 },
-            { xPercent: -50, duration: 30, ease: "linear", repeat: -1 }
-        );
-        animRef.current = anim;
+        let raf: number;
+        const speed = 0.8; // px per frame
 
-        return () => { anim.kill(); };
+        const tick = () => {
+            const s = state.current;
+            if (!s.paused && !s.dragging) {
+                c.scrollLeft += speed;
+                // Seamless loop: when one full set has passed, jump back
+                const half = t.scrollWidth / 2;
+                if (c.scrollLeft >= half) c.scrollLeft -= half;
+            }
+            raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+
+        // Document-level move/up so drag keeps working outside the container
+        const onMove = (e: MouseEvent) => {
+            const s = state.current;
+            if (!s.dragging) return;
+            const dx = e.clientX - s.startX;
+            let next = s.startScroll - dx;
+            const half = t.scrollWidth / 2;
+            if (next < 0) next += half;
+            if (next >= half) next -= half;
+            c.scrollLeft = next;
+        };
+
+        const onUp = () => {
+            state.current.dragging = false;
+            state.current.paused = false;
+            document.removeEventListener("mousemove", onMove);
+            document.removeEventListener("mouseup", onUp);
+        };
+
+        const onDown = (e: MouseEvent) => {
+            state.current.dragging = true;
+            state.current.paused = true;
+            state.current.startX = e.clientX;
+            state.current.startScroll = c.scrollLeft;
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onUp);
+        };
+
+        const onEnter = () => { state.current.paused = true; };
+        const onLeave = () => { if (!state.current.dragging) state.current.paused = false; };
+        const onTouchStart = () => { state.current.paused = true; };
+        const onTouchEnd = () => { state.current.paused = false; };
+
+        c.addEventListener("mousedown", onDown);
+        c.addEventListener("mouseenter", onEnter);
+        c.addEventListener("mouseleave", onLeave);
+        c.addEventListener("touchstart", onTouchStart, { passive: true });
+        c.addEventListener("touchend", onTouchEnd);
+
+        return () => {
+            cancelAnimationFrame(raf);
+            c.removeEventListener("mousedown", onDown);
+            c.removeEventListener("mouseenter", onEnter);
+            c.removeEventListener("mouseleave", onLeave);
+            c.removeEventListener("touchstart", onTouchStart);
+            c.removeEventListener("touchend", onTouchEnd);
+            document.removeEventListener("mousemove", onMove);
+            document.removeEventListener("mouseup", onUp);
+        };
     }, []);
 
-    const pauseScroll = (cardEl: HTMLElement) => {
-        animRef.current?.pause();
-        gsap.to(cardEl, { scale: 1.08, duration: 0.3, ease: "power2.out" });
-    };
-
-    const resumeScroll = (cardEl: HTMLElement) => {
-        gsap.to(cardEl, { scale: 1, duration: 0.3, ease: "power2.out" });
-        animRef.current?.resume();
-    };
-
-    // Duplicate cards for seamless infinite loop
     const marqueeCards = [...visionCards, ...visionCards];
 
     return (
-        <section id="vision" className="py-20 bg-white overflow-hidden">
+        <section id="vision" className="py-20 bg-white">
             {/* Section heading */}
             <div className="max-w-[1440px] mx-auto px-6 lg:px-[92px]">
                 <div className="mb-14">
@@ -184,17 +231,19 @@ export default function VisionSection() {
                 </div>
             </div>
 
-            {/* Unified marquee — works on all screen sizes */}
-            <div className="overflow-hidden">
-                <div ref={trackRef} className="flex gap-4 md:gap-6 w-max">
+            {/* Scrollable marquee — auto-scrolls via RAF, draggable with cursor */}
+            <div
+                ref={containerRef}
+                className="overflow-x-auto cursor-grab active:cursor-grabbing select-none"
+                style={{ scrollbarWidth: "none" }}
+            >
+                <div ref={trackRef} className="flex gap-4 md:gap-6 w-max px-6 lg:px-[92px]">
                     {marqueeCards.map((card, i) => (
                         <div
                             key={i}
-                            onMouseEnter={(e) => pauseScroll(e.currentTarget)}
-                            onMouseLeave={(e) => resumeScroll(e.currentTarget)}
-                            onTouchStart={(e) => pauseScroll(e.currentTarget)}
-                            onTouchEnd={(e) => resumeScroll(e.currentTarget)}
-                            className={`rounded-3xl overflow-hidden border shadow-sm flex flex-col w-[270px] md:w-[380px] flex-shrink-0 cursor-default ${
+                            onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.08, duration: 0.3, ease: "power2.out" })}
+                            onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
+                            className={`rounded-3xl overflow-hidden border shadow-sm flex flex-col w-[270px] md:w-[380px] flex-shrink-0 ${
                                 card.featured
                                     ? "shadow-lg ring-2 ring-[#3aa692] border-[#3aa692]"
                                     : "border-[#e8f5f2]"
