@@ -698,29 +698,52 @@ export default function AuthModal() {
         return () => { document.body.style.overflow = ""; };
     }, [isOpen]);
 
-    // Animated view switch
+    // Animated view switch — directional slide + left-panel text crossfade
     function switchView(newView: View) {
         if (newView === currentView || !contentRef.current) {
             setCurrentView(newView);
             return;
         }
-        gsap.to(contentRef.current, {
-            x: -22, opacity: 0, duration: 0.18, ease: "power2.in",
-            onComplete: () => {
-                setCurrentView(newView);
-                gsap.fromTo(contentRef.current!,
-                    { x: 24, opacity: 0 },
-                    { x: 0, opacity: 1, duration: 0.28, ease: "power2.out" }
-                );
-                gsap.from(".auth-field",
-                    { y: 10, opacity: 0, stagger: 0.06, duration: 0.35, delay: 0.06, overwrite: true }
-                );
-                gsap.fromTo(".auth-cta",
-                    { y: 9, opacity: 0 },
-                    { y: 0, opacity: 1, duration: 0.35, delay: 0.42, clearProps: "opacity,transform", overwrite: true }
-                );
-            },
-        });
+
+        // Determine slide direction: forward = slide left, backward = slide right
+        const order: View[] = ["signin", "signup", "doctor-onboarding"];
+        const dir = order.indexOf(newView) > order.indexOf(currentView) ? 1 : -1;
+        const EXIT_X  = -48 * dir;
+        const ENTER_X =  48 * dir;
+
+        const tl = gsap.timeline();
+
+        // Phase 1: slide form out + fade panel text out simultaneously
+        tl.to(contentRef.current, {
+            x: EXIT_X, opacity: 0, duration: 0.2, ease: "power3.in",
+        })
+        .to(".auth-panel-text", {
+            y: dir * -10, opacity: 0, duration: 0.18, ease: "power2.in",
+        }, "<") // start at same time
+
+        // Phase 2: swap state, then slide new content in
+        .call(() => setCurrentView(newView))
+
+        .fromTo(contentRef.current,
+            { x: ENTER_X, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.3, ease: "power3.out" }
+        )
+        .fromTo(".auth-panel-text",
+            { y: dir * 10, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.26, ease: "power2.out" },
+            "<"
+        )
+
+        // Phase 3: stagger fields in
+        .from(".auth-field",
+            { y: 11, opacity: 0, stagger: 0.055, duration: 0.35, overwrite: true },
+            "-=0.18"
+        )
+        .fromTo(".auth-cta",
+            { y: 9, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.32, clearProps: "opacity,transform", overwrite: true },
+            "-=0.05"
+        );
     }
 
     if (!mounted || !isOpen) return null;
@@ -746,7 +769,7 @@ export default function AuthModal() {
             >
                 {/* Left panel */}
                 {/* Lock panel to "signup" for both signup and doctor-onboarding so it never changes */}
-                <LeftPanel view="signup" />
+                <LeftPanel view={currentView === "doctor-onboarding" ? "signup" : currentView} />
 
                 {/* Close button (sits over both panels) */}
                 <button
