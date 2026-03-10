@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, LogIn } from "lucide-react";
+import { useAuthModal } from "@/lib/context/auth-modal";
 
 
 // Aushadham logo — matches provided image: capsule + dots above, AUSHADHAM text below
@@ -72,6 +73,7 @@ export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [active, setActive] = useState("hero");
     const [atBottom, setAtBottom] = useState(false);
+    const { openSignIn, openSignUp } = useAuthModal();
 
     // Scroll-spy: watch which section is visible
     useEffect(() => {
@@ -148,19 +150,19 @@ export default function Navbar() {
 
                 {/* CTA Buttons */}
                 <div className="hidden lg:flex items-center gap-4">
-                    <a
-                        href="/signup"
+                    <button
+                        onClick={openSignUp}
                         className="px-6 py-2.5 rounded-full border border-gray-800 text-gray-900 text-sm font-semibold hover:bg-gray-50 transition-all duration-200 inline-flex items-center justify-center"
                     >
                         Sign up
-                    </a>
-                    <a
-                        href="/signin"
+                    </button>
+                    <button
+                        onClick={openSignIn}
                         className="px-6 py-2.5 rounded-full text-white text-sm font-semibold transition-all duration-200 shadow-sm inline-flex items-center justify-center hover:opacity-90"
                         style={{ backgroundColor: "#3aa692" }}
                     >
                         Sign in
-                    </a>
+                    </button>
                 </div>
 
                 {/* Mobile Hamburger — hidden on mobile (moved to fixed bottom bar) */}
@@ -190,19 +192,19 @@ export default function Navbar() {
                         );
                     })}
                     <div className="flex gap-3 pt-2">
-                        <a
-                            href="/signup"
+                        <button
+                            onClick={() => { openSignUp(); setMenuOpen(false); }}
                             className="flex-1 py-2.5 rounded-full border border-white/40 text-white text-sm font-semibold text-center"
                         >
                             Sign up
-                        </a>
-                        <a
-                            href="/signin"
+                        </button>
+                        <button
+                            onClick={() => { openSignIn(); setMenuOpen(false); }}
                             className="flex-1 py-2.5 rounded-full text-white text-sm font-semibold text-center"
                             style={{ backgroundColor: "#3aa692" }}
                         >
                             Sign in
-                        </a>
+                        </button>
                     </div>
                 </div>
             )}
@@ -230,13 +232,24 @@ export default function Navbar() {
                 ))}
             </div>
 
-            {/* Search icon */}
-            <button
-                aria-label="Search"
-                className="text-white/80 hover:text-white transition-colors ml-3 shrink-0"
-            >
-                <Search size={20} />
-            </button>
+            {/* Auth + Search */}
+            <div className="flex items-center gap-2 ml-2 shrink-0">
+                <button
+                    onClick={openSignIn}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-full text-white text-[11px] font-semibold transition-all hover:opacity-90"
+                    style={{ backgroundColor: "#3aa692" }}
+                    aria-label="Sign in"
+                >
+                    <LogIn size={13} />
+                    Sign in
+                </button>
+                <button
+                    aria-label="Search"
+                    className="text-white/80 hover:text-white transition-colors"
+                >
+                    <Search size={19} />
+                </button>
+            </div>
         </div>
         </>
     );

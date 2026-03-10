@@ -1,5 +1,7 @@
+"use client";
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 import Link from "next/link";
+import { useAuthModal } from "@/lib/context/auth-modal";
 
 // Reusable pill logo for footer — matches Figma design
 function FooterLogo() {
@@ -52,6 +54,7 @@ const footerColumns = [
 ];
 
 export default function Footer() {
+    const { openSignIn, openSignUp } = useAuthModal();
     return (
         <footer style={{ backgroundColor: "#1f5f4a" }}>
             <div className="max-w-[1440px] mx-auto px-6 lg:px-[121px] py-16">
@@ -76,13 +79,23 @@ export default function Footer() {
                         <div key={col.heading} className="flex flex-col gap-3">
                             <h4 className="text-[15px] font-bold mb-1" style={{ color: "white" }}>{col.heading}</h4>
                             {col.links.map((link) => (
-                                <Link
-                                    key={link.label}
-                                    href={link.href}
-                                    className="text-sm transition-colors duration-200 hover:underline text-[rgba(255,255,255,0.65)] hover:text-white"
-                                >
-                                    {link.label}
-                                </Link>
+                                link.href === "/signin" || link.href === "/signup" ? (
+                                    <button
+                                        key={link.label}
+                                        onClick={link.href === "/signin" ? openSignIn : openSignUp}
+                                        className="text-sm transition-colors duration-200 hover:underline text-[rgba(255,255,255,0.65)] hover:text-white text-left"
+                                    >
+                                        {link.label}
+                                    </button>
+                                ) : (
+                                    <Link
+                                        key={link.label}
+                                        href={link.href}
+                                        className="text-sm transition-colors duration-200 hover:underline text-[rgba(255,255,255,0.65)] hover:text-white"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                )
                             ))}
                         </div>
                     ))}
@@ -90,20 +103,20 @@ export default function Footer() {
                     {/* Login / Signup column */}
                     <div className="flex flex-col gap-3 justify-start">
                         <h4 className="text-[15px] font-bold mb-1" style={{ color: "white" }}>Get Started</h4>
-                        <Link
-                            href="/signin"
+                        <button
+                            onClick={openSignIn}
                             className="px-5 py-2.5 rounded-full text-white text-sm font-semibold text-center transition-all duration-200 hover:opacity-90"
                             style={{ backgroundColor: "#3aa692" }}
                         >
                             Sign in
-                        </Link>
-                        <Link
-                            href="/signup"
+                        </button>
+                        <button
+                            onClick={openSignUp}
                             className="px-5 py-2.5 rounded-full text-sm font-semibold text-center transition-all duration-200 hover:opacity-90"
                             style={{ border: "2px solid rgba(255,255,255,0.6)", color: "white" }}
                         >
                             Sign up
-                        </Link>
+                        </button>
                     </div>
                 </div>
 

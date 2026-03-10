@@ -243,11 +243,7 @@ export default function VisionSection() {
                             key={i}
                             onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.08, duration: 0.3, ease: "power2.out" })}
                             onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
-                        className={`rounded-3xl border shadow-sm flex flex-col w-[270px] md:w-[380px] flex-shrink-0 ${
-                                card.featured
-                                    ? "shadow-lg ring-2 ring-[#3aa692] border-[#3aa692]"
-                                    : "border-[#e8f5f2]"
-                            }`}
+                        className="rounded-3xl flex flex-col w-[270px] md:w-[380px] flex-shrink-0 border border-[#c8ebe3]"
                         >
                             <VisionCard card={card} />
                         </div>

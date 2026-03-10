@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { AuthModalProvider } from "@/lib/context/auth-modal";
+import AuthModal from "@/components/modals/auth-modal";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,7 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased font-sans pb-[56px] lg:pb-0`}>
-        {children}
+        <AuthModalProvider>
+          {children}
+          <AuthModal />
+        </AuthModalProvider>
       </body>
     </html>
   );

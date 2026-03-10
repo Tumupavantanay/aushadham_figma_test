@@ -1,10 +1,11 @@
 "use client";
 // Figma illustration asset (node 9:2714)
 // Inline SVG — no external dependency, matches Figma design: patient + doctor consultation + medical items
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Upload, CalendarCheck } from "lucide-react";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
+import { useAuthModal } from "@/lib/context/auth-modal";
 import { animateHeroEntrance, animateIllustrationEntrance, animateIllustrationFloat } from "@/lib/animations/hero";
 import { animateCounters, type StatDef } from "@/lib/animations/statsCounter";
 
@@ -131,14 +132,7 @@ export default function HeroSection() {
     const containerRef = useRef<HTMLElement>(null);
     const illustrationRef = useRef<HTMLDivElement>(null);
     const statRefs = useRef<(HTMLSpanElement | null)[]>([]);
-    const [ctaLoading, setCtaLoading] = useState(false);
-
-    function handleUploadCta() {
-        if (ctaLoading) return;
-        setCtaLoading(true);
-        document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
-        setTimeout(() => setCtaLoading(false), 500);
-    }
+    const { openSignIn } = useAuthModal();
 
     useGSAP(() => {
         // Hero entrance — sequenced timeline with clearProps on button (fixes disappearing bug)
@@ -190,10 +184,9 @@ export default function HeroSection() {
 
                     <div className="flex flex-col gap-3 md:gap-6 mt-6 md:mt-12">
                         <button
-                            onClick={handleUploadCta}
-                            disabled={ctaLoading}
+                            onClick={openSignIn}
                             aria-label="Upload your health reports"
-                            className="hero-btn group inline-flex items-center gap-3 px-8 py-4 text-white text-[17px] font-semibold rounded-full w-fit transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] disabled:opacity-75 disabled:cursor-not-allowed"
+                            className="hero-btn group inline-flex items-center gap-3 px-8 py-4 text-white text-[17px] font-semibold rounded-full w-fit transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02]"
                             style={{ backgroundColor: "#065b4b" }}
                         >
                             <Upload size={19} />
@@ -212,24 +205,24 @@ export default function HeroSection() {
             </div>
 
             {/* ── BLOCK 2: Illustration (left) + Connect With Doctors (right) ── */}
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-[99px] pb-24 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div className="max-w-[1440px] mx-auto px-6 lg:px-[99px] pb-32 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
                     {/* Left: Illustration */}
                     <div
                         ref={illustrationRef}
-                        className="rounded-[28px] shadow-lg border border-[#d1ece6] overflow-hidden"
+                        className="rounded-[36px] shadow-xl border border-[#d1ece6] overflow-hidden"
                         style={{ background: "linear-gradient(135deg, #e8f5f2 0%, #c8ebe3 100%)" }}
                     >
-                        <div className="px-6 pt-6 pb-4">
+                        <div className="px-8 pt-8 pb-6">
                             <DoctorConsultationIllustration />
                         </div>
                     </div>
 
                     {/* Right: Connect With Doctors copy + Book CTA */}
-                    <div className="flex flex-col gap-7">
+                    <div className="flex flex-col gap-8">
                         <h2
-                            className="text-[38px] md:text-[48px] font-extrabold leading-[1.1] tracking-tight"
+                            className="text-[46px] md:text-[58px] font-extrabold leading-[1.08] tracking-tight"
                             style={{ color: "#065b4b" }}
                         >
                             Connect With Doctors{" "}
@@ -237,31 +230,31 @@ export default function HeroSection() {
                             <span style={{ color: "#228573" }}>Direct Consult Online</span>
                         </h2>
 
-                        <p className="text-[16px] leading-relaxed" style={{ color: "rgba(6,91,75,0.7)" }}>
+                        <p className="text-[18px] leading-relaxed" style={{ color: "rgba(6,91,75,0.7)" }}>
                             Skip the waiting room and connect with top doctors across India via Video Call or In-Clinic visit. Your Health, Your Schedule!
                         </p>
 
-                        <Link
-                            href="/book-appointment"
-                            className="inline-flex items-center gap-3 px-8 py-4 text-white text-[17px] font-semibold rounded-full w-fit transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                        <button
+                            onClick={openSignIn}
+                            className="inline-flex items-center gap-3 px-10 py-5 text-white text-[19px] font-bold rounded-full w-fit transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 hover:scale-[1.02]"
                             style={{ backgroundColor: "#228573" }}
                         >
-                            <CalendarCheck size={19} />
+                            <CalendarCheck size={22} />
                             Book an Appointment
-                        </Link>
+                        </button>
 
                         {/* Stats */}
-                        <div className="flex items-center gap-10 mt-2">
+                        <div className="flex items-center gap-12 mt-2">
                             {heroStats.map((stat, i) => (
                                 <div key={stat.label} className="flex flex-col">
                                     <span
                                         ref={(el) => { statRefs.current[i] = el; }}
-                                        className="text-2xl font-extrabold"
+                                        className="text-3xl font-extrabold"
                                         style={{ color: "#065b4b" }}
                                     >
                                         {stat.decimals > 0 ? stat.num.toFixed(stat.decimals) : stat.num}{stat.suffix}
                                     </span>
-                                    <span className="text-sm" style={{ color: "rgba(6,91,75,0.55)" }}>{stat.label}</span>
+                                    <span className="text-[15px]" style={{ color: "rgba(6,91,75,0.55)" }}>{stat.label}</span>
                                 </div>
                             ))}
                         </div>

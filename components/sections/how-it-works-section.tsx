@@ -78,7 +78,7 @@ export default function HowItWorksSection() {
     }, { scope: sectionRef });
 
     return (
-        <section ref={sectionRef} id="how-it-works" className="steps-section py-20 bg-white">
+        <section ref={sectionRef} id="how-it-works" className="steps-section pt-28 pb-20 bg-[#f0faf7]">
             <div className="max-w-[1440px] mx-auto px-6 lg:px-[92px]">
                 <div className="mb-14">
                     <SectionHeading title="How Aushadham works" />
