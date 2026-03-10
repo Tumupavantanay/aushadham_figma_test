@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { createPortal } from "react-dom";
+import { createPortal, flushSync } from "react-dom";
 import gsap from "gsap";
 import {
     X, Eye, EyeOff, User, Mail, Phone, Lock, Stethoscope,
@@ -700,60 +700,68 @@ export default function AuthModal() {
         return () => { document.body.style.overflow = ""; };
     }, [isOpen]);
 
-    // Animated view switch — directional slide + left-panel text crossfade
+    // Animated view switch — directional slide + smooth height morph + panel crossfade
     function switchView(newView: View) {
-        if (newView === currentView || !contentRef.current) {
+        if (newView === currentView || !contentRef.current || !modalRef.current) {
             setCurrentView(newView);
             return;
         }
 
-        // Determine slide direction: forward = slide left, backward = slide right
         const order: View[] = ["signin", "signup", "doctor-onboarding"];
         const dir = order.indexOf(newView) > order.indexOf(currentView) ? 1 : -1;
-        const EXIT_X  = -48 * dir;
-        const ENTER_X =  48 * dir;
+        const EXIT_X  = -52 * dir;
+        const ENTER_X =  52 * dir;
 
-        const tl = gsap.timeline();
+        const modal   = modalRef.current;
+        const content = contentRef.current;
 
-        // Phase 1: slide form out + fade panel text & illustration out simultaneously
-        tl.to(contentRef.current, {
-            x: EXIT_X, opacity: 0, duration: 0.2, ease: "power3.in",
+        // Lock current height so exit animation doesn't jump
+        const fromH = modal.offsetHeight;
+        gsap.set(modal, { height: fromH, overflow: "hidden" });
+
+        // ── EXIT ──────────────────────────────────────────────────────
+        gsap.timeline({
+            onComplete() {
+                // flushSync forces React to paint the new view before we measure
+                flushSync(() => setCurrentView(newView));
+
+                // Measure natural height of the newly rendered content
+                modal.style.height = "auto";
+                const toH = modal.offsetHeight;
+                gsap.set(modal, { height: fromH }); // restore lock
+
+                // ── ENTER ─────────────────────────────────────────────
+                gsap.timeline({ onComplete: () => { gsap.set(modal, { clearProps: "height,overflow" }); } })
+                    .to(modal, { height: toH, duration: 0.42, ease: "power2.inOut" })
+                    .fromTo(content,
+                        { x: ENTER_X, opacity: 0 },
+                        { x: 0, opacity: 1, duration: 0.32, ease: "power3.out" },
+                        "<"
+                    )
+                    .fromTo(".auth-panel-text",
+                        { y: dir * 12, opacity: 0 },
+                        { y: 0, opacity: 1, duration: 0.28, ease: "power2.out" },
+                        "<"
+                    )
+                    .fromTo(".auth-panel-illustration",
+                        { opacity: 0, scale: 0.84, y: 8 },
+                        { opacity: 1, scale: 1, y: 0, duration: 0.44, ease: "back.out(1.5)" },
+                        "<"
+                    )
+                    .from(".auth-field",
+                        { y: 10, opacity: 0, stagger: 0.05, duration: 0.32, overwrite: true },
+                        "-=0.22"
+                    )
+                    .fromTo(".auth-cta",
+                        { y: 8, opacity: 0 },
+                        { y: 0, opacity: 1, duration: 0.28, clearProps: "opacity,transform", overwrite: true },
+                        "-=0.05"
+                    );
+            },
         })
-        .to(".auth-panel-text", {
-            y: dir * -10, opacity: 0, duration: 0.18, ease: "power2.in",
-        }, "<")
-        .to(".auth-panel-illustration", {
-            opacity: 0, scale: 0.82, y: 10, duration: 0.2, ease: "power2.in",
-        }, "<")
-
-        // Phase 2: swap state, then slide new content in
-        .call(() => setCurrentView(newView))
-
-        .fromTo(contentRef.current,
-            { x: ENTER_X, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.3, ease: "power3.out" }
-        )
-        .fromTo(".auth-panel-text",
-            { y: dir * 10, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.26, ease: "power2.out" },
-            "<"
-        )
-        .fromTo(".auth-panel-illustration",
-            { opacity: 0, scale: 0.82, y: 10 },
-            { opacity: 1, scale: 1, y: 0, duration: 0.42, ease: "back.out(1.6)" },
-            "<"
-        )
-
-        // Phase 3: stagger fields in
-        .from(".auth-field",
-            { y: 11, opacity: 0, stagger: 0.055, duration: 0.35, overwrite: true },
-            "-=0.18"
-        )
-        .fromTo(".auth-cta",
-            { y: 9, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.32, clearProps: "opacity,transform", overwrite: true },
-            "-=0.05"
-        );
+        .to(content, { x: EXIT_X, opacity: 0, duration: 0.2, ease: "power3.in" })
+        .to(".auth-panel-text", { y: dir * -10, opacity: 0, duration: 0.18, ease: "power2.in" }, "<")
+        .to(".auth-panel-illustration", { opacity: 0, scale: 0.84, y: 8, duration: 0.2, ease: "power2.in" }, "<");
     }
 
     if (!mounted || !isOpen) return null;

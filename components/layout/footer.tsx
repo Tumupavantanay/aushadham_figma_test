@@ -33,15 +33,6 @@ const footerColumns = [
         ],
     },
     {
-        heading: "For Clinics",
-        links: [
-            { label: "Features", href: "#" },
-            { label: "Sign-up", href: "/signup" },
-            { label: "Login", href: "/signin" },
-            { label: "Request Call back", href: "#" },
-        ],
-    },
-    {
         heading: "Aushadham",
         links: [
             { label: "About us", href: "#mission" },
@@ -59,7 +50,7 @@ export default function Footer() {
         <footer style={{ backgroundColor: "#1f5f4a" }}>
             <div className="max-w-[1440px] mx-auto px-6 lg:px-[121px] py-16">
                 {/* Main grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 pb-10" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 pb-10" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
 
                     {/* Logo + brand */}
                     <div className="col-span-2 md:col-span-1 flex flex-col gap-4">

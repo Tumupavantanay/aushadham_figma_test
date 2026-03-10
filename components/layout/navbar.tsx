@@ -165,9 +165,9 @@ export default function Navbar() {
                     </button>
                 </div>
 
-                {/* Mobile Hamburger — hidden on mobile (moved to fixed bottom bar) */}
+                {/* Mobile Hamburger */}
                 <button
-                    className="hidden text-[#228573]"
+                    className="lg:hidden text-[#228573]"
                     onClick={() => setMenuOpen(!menuOpen)}
                     aria-label="Toggle navigation menu"
                 >
@@ -212,44 +212,26 @@ export default function Navbar() {
 
         {/* ── MOBILE BOTTOM NAV BAR ── */}
         <div
-            className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-700 ease-in-out ${
+            className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-3 px-5 py-3 transition-all duration-700 ease-in-out ${
                 atBottom ? "opacity-0 pointer-events-none translate-y-2" : "opacity-100 translate-y-0"
             }`}
-            style={{ backgroundColor: "#1f5f4a" }}
+            style={{ backgroundColor: "#1f5f4a", borderTop: "1px solid rgba(255,255,255,0.1)" }}
         >
-            {/* All nav links */}
-            <div className="flex items-center gap-4">
-                {navLinks.map((link) => (
-                    <button
-                        key={link.label}
-                        onClick={() => scrollToSection(link.sectionId)}
-                        className={`text-[11px] font-semibold transition-colors whitespace-nowrap ${
-                            active === link.sectionId ? "text-[#7dd8c9]" : "text-white/70 hover:text-white"
-                        }`}
-                    >
-                        {link.label}
-                    </button>
-                ))}
-            </div>
-
-            {/* Auth + Search */}
-            <div className="flex items-center gap-2 ml-2 shrink-0">
-                <button
-                    onClick={openSignIn}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-full text-white text-[11px] font-semibold transition-all hover:opacity-90"
-                    style={{ backgroundColor: "#3aa692" }}
-                    aria-label="Sign in"
-                >
-                    <LogIn size={13} />
-                    Sign in
-                </button>
-                <button
-                    aria-label="Search"
-                    className="text-white/80 hover:text-white transition-colors"
-                >
-                    <Search size={19} />
-                </button>
-            </div>
+            <button
+                onClick={openSignIn}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-white text-sm font-bold transition-all hover:opacity-90"
+                style={{ backgroundColor: "#3aa692" }}
+            >
+                <LogIn size={15} />
+                Sign In
+            </button>
+            <button
+                onClick={openSignUp}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-bold transition-all hover:opacity-90"
+                style={{ border: "2px solid rgba(255,255,255,0.55)", color: "white" }}
+            >
+                Sign Up
+            </button>
         </div>
         </>
     );
