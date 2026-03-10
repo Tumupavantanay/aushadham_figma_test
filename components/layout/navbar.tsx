@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Search, Menu, X, LogIn } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Search, Menu, X, DoorOpen } from "lucide-react";
+import gsap from "gsap";
 import { useAuthModal } from "@/lib/context/auth-modal";
 
 
@@ -73,7 +74,10 @@ export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [active, setActive] = useState("hero");
     const [atBottom, setAtBottom] = useState(false);
+    const [doorOpen, setDoorOpen] = useState(false);
     const { openSignIn, openSignUp } = useAuthModal();
+    const doorBtnRef = useRef<HTMLButtonElement>(null);
+    const popoverRef = useRef<HTMLDivElement>(null);
 
     // Scroll-spy: watch which section is visible
     useEffect(() => {
@@ -107,6 +111,38 @@ export default function Navbar() {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
+
+    // Door icon: gentle float animation
+    useEffect(() => {
+        if (!doorBtnRef.current) return;
+        const tw = gsap.to(doorBtnRef.current, {
+            y: -5, duration: 1.4, repeat: -1, yoyo: true, ease: "sine.inOut",
+        });
+        return () => { tw.kill(); };
+    }, []);
+
+    // Popover: scale+fade entrance whenever it opens
+    useEffect(() => {
+        if (doorOpen && popoverRef.current) {
+            gsap.fromTo(popoverRef.current,
+                { scale: 0.72, opacity: 0, y: 10 },
+                { scale: 1, opacity: 1, y: 0, duration: 0.28, ease: "back.out(2.2)" }
+            );
+        }
+    }, [doorOpen]);
+
+    // Close popover on outside click
+    useEffect(() => {
+        if (!doorOpen) return;
+        const handler = (e: MouseEvent) => {
+            if (doorBtnRef.current && !doorBtnRef.current.contains(e.target as Node) &&
+                popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+                setDoorOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, [doorOpen]);
 
     return (
         <>
@@ -165,9 +201,9 @@ export default function Navbar() {
                     </button>
                 </div>
 
-                {/* Mobile Hamburger */}
+                {/* Mobile Hamburger — hidden; bottom bar handles mobile nav */}
                 <button
-                    className="lg:hidden text-[#228573]"
+                    className="hidden text-[#228573]"
                     onClick={() => setMenuOpen(!menuOpen)}
                     aria-label="Toggle navigation menu"
                 >
@@ -212,26 +248,75 @@ export default function Navbar() {
 
         {/* ── MOBILE BOTTOM NAV BAR ── */}
         <div
-            className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-3 px-5 py-3 transition-all duration-700 ease-in-out ${
+            className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-700 ease-in-out ${
                 atBottom ? "opacity-0 pointer-events-none translate-y-2" : "opacity-100 translate-y-0"
             }`}
-            style={{ backgroundColor: "#1f5f4a", borderTop: "1px solid rgba(255,255,255,0.1)" }}
+            style={{ backgroundColor: "#1f5f4a" }}
         >
-            <button
-                onClick={openSignIn}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-white text-sm font-bold transition-all hover:opacity-90"
-                style={{ backgroundColor: "#3aa692" }}
-            >
-                <LogIn size={15} />
-                Sign In
-            </button>
-            <button
-                onClick={openSignUp}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-bold transition-all hover:opacity-90"
-                style={{ border: "2px solid rgba(255,255,255,0.55)", color: "white" }}
-            >
-                Sign Up
-            </button>
+            {/* Nav links */}
+            <div className="flex items-center gap-3.5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+                {navLinks.map((link) => (
+                    <button
+                        key={link.label}
+                        onClick={() => scrollToSection(link.sectionId)}
+                        className={`text-[11px] font-semibold transition-colors whitespace-nowrap ${
+                            active === link.sectionId ? "text-[#7dd8c9]" : "text-white/70 hover:text-white"
+                        }`}
+                    >
+                        {link.label}
+                    </button>
+                ))}
+            </div>
+
+            {/* Door icon — auth entry with popover */}
+            <div className="relative shrink-0 ml-2">
+
+                {/* Popover */}
+                {doorOpen && (
+                    <div
+                        ref={popoverRef}
+                        className="absolute bottom-14 right-0 flex flex-col gap-2 p-3 rounded-2xl shadow-2xl"
+                        style={{
+                            backgroundColor: "#065b4b",
+                            minWidth: "148px",
+                            border: "1px solid rgba(255,255,255,0.13)",
+                            transformOrigin: "bottom right",
+                        }}
+                    >
+                        {/* Arrow tip */}
+                        <div
+                            className="absolute -bottom-1.5 right-4 w-3 h-3 rotate-45"
+                            style={{ backgroundColor: "#065b4b", border: "1px solid rgba(255,255,255,0.13)", borderTop: "none", borderLeft: "none" }}
+                        />
+                        <p className="text-white/50 text-[10px] font-semibold text-center tracking-wide uppercase">Get Started</p>
+                        <button
+                            onClick={() => { openSignIn(); setDoorOpen(false); }}
+                            className="w-full py-2 rounded-full text-white text-xs font-bold transition-all hover:opacity-90"
+                            style={{ backgroundColor: "#3aa692" }}
+                        >
+                            Sign In
+                        </button>
+                        <button
+                            onClick={() => { openSignUp(); setDoorOpen(false); }}
+                            className="w-full py-2 rounded-full text-white text-xs font-bold transition-all hover:opacity-90"
+                            style={{ border: "1.5px solid rgba(255,255,255,0.4)" }}
+                        >
+                            Sign Up
+                        </button>
+                    </div>
+                )}
+
+                {/* The door button itself — floats via GSAP */}
+                <button
+                    ref={doorBtnRef}
+                    onClick={() => setDoorOpen(v => !v)}
+                    className="flex items-center justify-center w-11 h-11 rounded-full shadow-lg"
+                    style={{ backgroundColor: "#3aa692" }}
+                    aria-label="Sign in or Sign up"
+                >
+                    <DoorOpen size={20} className="text-white" />
+                </button>
+            </div>
         </div>
         </>
     );
