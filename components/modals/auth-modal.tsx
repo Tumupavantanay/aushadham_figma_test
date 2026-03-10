@@ -161,7 +161,9 @@ function LeftPanel({ view }: { view: View }) {
                     <h2 className="text-[19px] font-extrabold text-white leading-tight mb-1.5">{title}</h2>
                     <p className="text-sm text-white/60 leading-relaxed">{subtitle}</p>
                 </div>
-                <PanelIllustration view={view} />
+                <div className="auth-panel-illustration w-full flex justify-center">
+                    <PanelIllustration view={view} />
+                </div>
             </div>
 
             {/* Trust badges */}
@@ -713,13 +715,16 @@ export default function AuthModal() {
 
         const tl = gsap.timeline();
 
-        // Phase 1: slide form out + fade panel text out simultaneously
+        // Phase 1: slide form out + fade panel text & illustration out simultaneously
         tl.to(contentRef.current, {
             x: EXIT_X, opacity: 0, duration: 0.2, ease: "power3.in",
         })
         .to(".auth-panel-text", {
             y: dir * -10, opacity: 0, duration: 0.18, ease: "power2.in",
-        }, "<") // start at same time
+        }, "<")
+        .to(".auth-panel-illustration", {
+            opacity: 0, scale: 0.82, y: 10, duration: 0.2, ease: "power2.in",
+        }, "<")
 
         // Phase 2: swap state, then slide new content in
         .call(() => setCurrentView(newView))
@@ -731,6 +736,11 @@ export default function AuthModal() {
         .fromTo(".auth-panel-text",
             { y: dir * 10, opacity: 0 },
             { y: 0, opacity: 1, duration: 0.26, ease: "power2.out" },
+            "<"
+        )
+        .fromTo(".auth-panel-illustration",
+            { opacity: 0, scale: 0.82, y: 10 },
+            { opacity: 1, scale: 1, y: 0, duration: 0.42, ease: "back.out(1.6)" },
             "<"
         )
 
