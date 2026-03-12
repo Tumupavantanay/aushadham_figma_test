@@ -11,7 +11,7 @@ import {
 import { useAuthModal } from "@/lib/context/auth-modal";
 import { shakeField } from "@/lib/animations/auth";
 
-type View = "signin" | "signup" | "doctor-onboarding";
+type View = "signin" | "signup" | "doctor-onboarding" | "forgot-password";
 
 /* ─────────────────────────────────────────────
    Logo
@@ -102,6 +102,30 @@ function PanelIllustration({ view }: { view: View }) {
                 </>
             )}
 
+            {view === "forgot-password" && (
+                <>
+                    {/* Envelope body */}
+                    <rect x="58" y="72" width="124" height="90" rx="12" fill="white" opacity="0.10" stroke="white" strokeWidth="1.5" />
+                    {/* Envelope flap */}
+                    <path d="M58 84 L120 122 L182 84" stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+                    {/* Envelope center crease */}
+                    <path d="M58 162 L94 130 M182 162 L146 130" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.28" />
+                    {/* Lock body */}
+                    <rect x="100" y="172" width="40" height="32" rx="8" fill="white" opacity="0.14" stroke="white" strokeWidth="1.5" />
+                    {/* Lock shackle */}
+                    <path d="M110 172 L110 161 C110 151 130 151 130 161 L130 172" stroke="white" strokeWidth="3.2" strokeLinecap="round" fill="none" opacity="0.65" />
+                    {/* Keyhole */}
+                    <circle cx="120" cy="183" r="5.5" fill="#228573" opacity="0.9" />
+                    <path d="M117.5 185.5 L117.5 196 L122.5 196 L122.5 185.5" fill="#228573" opacity="0.9" />
+                    {/* Sparkle top-right */}
+                    <path d="M162 60 L164 54 L166 60 L172 62 L166 64 L164 70 L162 64 L156 62 Z" fill="white" opacity="0.38" />
+                    {/* Small sparkle left */}
+                    <path d="M68 178 L69.5 174 L71 178 L75 179.5 L71 181 L69.5 185 L68 181 L64 179.5 Z" fill="white" opacity="0.25" />
+                    {/* Arrow / send indicator */}
+                    <path d="M136 108 L160 108 M152 100 L160 108 L152 116" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.45" />
+                </>
+            )}
+
             {/* Floating pill capsule (top-right) */}
             <rect x="155" y="25" width="57" height="23" rx="11.5" fill="white" opacity="0.11" stroke="white" strokeWidth="1.4" />
             <rect x="155" y="25" width="28" height="23" rx="11.5" fill="white" opacity="0.1" />
@@ -143,6 +167,7 @@ function LeftPanel({ view }: { view: View }) {
         signin: { title: "Welcome back.", subtitle: "Your health journey continues here." },
         signup: { title: "Join 10,000+ users.", subtitle: "Access top doctors, anytime, anywhere." },
         "doctor-onboarding": { title: "Almost there.", subtitle: "Complete your profile to go live." },
+        "forgot-password": { title: "Reset password.", subtitle: "A fresh start is just one email away." },
     };
     const { title, subtitle } = cfg[view];
 
@@ -271,7 +296,8 @@ function SignInView({ onSwitch }: { onSwitch: (v: View) => void }) {
                         <span style={{ color: "rgba(6,91,75,0.6)" }}>Remember me</span>
                     </label>
                     <button type="button" className="font-semibold hover:underline"
-                        style={{ color: "#228573" }}>
+                        style={{ color: "#228573" }}
+                        onClick={() => onSwitch("forgot-password")}>
                         Forgot password?
                     </button>
                 </div>
@@ -641,6 +667,136 @@ function DoctorOnboardingView({ onSwitch }: { onSwitch: (v: View) => void }) {
 }
 
 /* ─────────────────────────────────────────────
+   Forgot Password view
+───────────────────────────────────────────── */
+function ForgotPasswordView({ onSwitch }: { onSwitch: (v: View) => void }) {
+    const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [sent, setSent] = useState(false);
+    const successRef = useRef<HTMLDivElement>(null);
+
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        if (!email) return;
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            setSent(true);
+        }, 1400);
+    }
+
+    useEffect(() => {
+        if (sent && successRef.current) {
+            gsap.fromTo(successRef.current,
+                { scale: 0.82, opacity: 0, y: 18 },
+                { scale: 1, opacity: 1, y: 0, duration: 0.48, ease: "back.out(1.9)" }
+            );
+        }
+    }, [sent]);
+
+    return (
+        <div>
+            {/* Back */}
+            <button
+                onClick={() => onSwitch("signin")}
+                className="auth-field flex items-center gap-1.5 text-xs font-semibold mb-5 hover:underline"
+                style={{ color: "#228573" }}
+            >
+                <ArrowLeft size={12} /> Back to sign in
+            </button>
+
+            {sent ? (
+                <div ref={successRef} className="flex flex-col items-center text-center py-6 gap-5">
+                    {/* Animated checkmark ring */}
+                    <div
+                        className="w-20 h-20 rounded-full flex items-center justify-center shadow-lg"
+                        style={{ background: "linear-gradient(135deg, #065b4b 0%, #3aa692 100%)", boxShadow: "0 8px 32px rgba(34,133,115,0.32)" }}
+                    >
+                        <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+                            <path d="M8 20L15 27L30 11" stroke="white" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 className="text-[22px] font-extrabold mb-2" style={{ color: "#065b4b" }}>
+                            Check your inbox!
+                        </h2>
+                        <p className="text-sm leading-relaxed" style={{ color: "rgba(6,91,75,0.6)" }}>
+                            We sent a reset link to<br />
+                            <span className="font-bold" style={{ color: "#228573" }}>{email}</span>
+                        </p>
+                    </div>
+                    <p className="text-xs" style={{ color: "rgba(6,91,75,0.45)" }}>
+                        Didn&apos;t get it?{" "}
+                        <button
+                            type="button"
+                            onClick={() => { setSent(false); setEmail(""); }}
+                            className="font-semibold hover:underline"
+                            style={{ color: "#228573" }}
+                        >
+                            Try again
+                        </button>
+                    </p>
+                    <button
+                        onClick={() => onSwitch("signin")}
+                        className="auth-cta w-full py-3.5 rounded-full text-white font-bold text-sm transition-all duration-300 hover:opacity-90 hover:shadow-lg hover:shadow-[rgba(34,133,115,0.28)] hover:-translate-y-0.5"
+                        style={{ background: "linear-gradient(135deg, #065b4b 0%, #228573 100%)" }}
+                    >
+                        Back to Sign In
+                    </button>
+                </div>
+            ) : (
+                <>
+                    <h2 className="auth-field text-[20px] font-extrabold mb-1" style={{ color: "#065b4b" }}>
+                        Forgot your password?
+                    </h2>
+                    <p className="auth-field text-sm mb-6" style={{ color: "rgba(6,91,75,0.55)" }}>
+                        No worries — enter your email and we&apos;ll send you a reset link.
+                    </p>
+
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+                        <AuthInput
+                            id="reset-email"
+                            label="Email address"
+                            type="email"
+                            placeholder="you@example.com"
+                            icon={Mail}
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                        />
+
+                        <button
+                            type="submit"
+                            disabled={loading || !email}
+                            className="auth-cta w-full py-3.5 rounded-full text-white font-bold text-sm mt-1 transition-all duration-300 hover:opacity-90 hover:shadow-lg hover:shadow-[rgba(34,133,115,0.28)] hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                            style={{ background: "linear-gradient(135deg, #065b4b 0%, #228573 100%)" }}
+                        >
+                            {loading
+                                ? <span className="flex items-center justify-center gap-2">
+                                    <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                                    Sending link…
+                                  </span>
+                                : "Send Reset Link"
+                            }
+                        </button>
+                    </form>
+
+                    <p className="auth-footer-link text-center mt-5 text-sm" style={{ color: "rgba(6,91,75,0.6)" }}>
+                        Remember your password?{" "}
+                        <button
+                            onClick={() => onSwitch("signin")}
+                            className="font-bold hover:underline"
+                            style={{ color: "#228573" }}
+                        >
+                            Sign in
+                        </button>
+                    </p>
+                </>
+            )}
+        </div>
+    );
+}
+
+/* ─────────────────────────────────────────────
    Main Modal
 ───────────────────────────────────────────── */
 export default function AuthModal() {
@@ -707,7 +863,7 @@ export default function AuthModal() {
             return;
         }
 
-        const order: View[] = ["signin", "signup", "doctor-onboarding"];
+        const order: View[] = ["forgot-password", "signin", "signup", "doctor-onboarding"];
         const dir = order.indexOf(newView) > order.indexOf(currentView) ? 1 : -1;
         const EXIT_X  = -52 * dir;
         const ENTER_X =  52 * dir;
@@ -786,7 +942,7 @@ export default function AuthModal() {
                 onClick={e => e.stopPropagation()}
             >
                 {/* Left panel */}
-                {/* Lock panel to "signup" for both signup and doctor-onboarding so it never changes */}
+                {/* Lock panel to "signup" for doctor-onboarding; everything else uses its own view */}
                 <LeftPanel view={currentView === "doctor-onboarding" ? "signup" : currentView} />
 
                 {/* Close button (sits over both panels) */}
@@ -803,9 +959,10 @@ export default function AuthModal() {
                 <div className="flex-1 bg-white overflow-y-auto" style={{ scrollbarWidth: "none" }}>
                     <div className="min-h-full flex items-start lg:items-center justify-center px-7 py-7 md:px-10">
                         <div ref={contentRef} className="w-full max-w-[400px]">
-                            {currentView === "signin"             && <SignInView           onSwitch={switchView} />}
-                            {currentView === "signup"             && <SignUpView            onSwitch={switchView} />}
-                            {currentView === "doctor-onboarding"  && <DoctorOnboardingView onSwitch={switchView} />}
+                            {currentView === "signin"             && <SignInView            onSwitch={switchView} />}
+                            {currentView === "signup"             && <SignUpView             onSwitch={switchView} />}
+                            {currentView === "doctor-onboarding"  && <DoctorOnboardingView  onSwitch={switchView} />}
+                            {currentView === "forgot-password"    && <ForgotPasswordView    onSwitch={switchView} />}
                         </div>
                     </div>
                 </div>

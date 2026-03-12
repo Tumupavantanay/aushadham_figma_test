@@ -166,6 +166,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  button,
+  [role="button"],
+  a {
+    cursor: pointer;
+  }
 }
 
 /* ─── Aushadham Custom Utilities ─── */
@@ -180,10 +186,4 @@
 .card-hover:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(34, 133, 115, 0.15);
-}
-
-/* ─── Global cursor fixes ─── */
-button,
-[role="button"] {
-  cursor: pointer;
 }
