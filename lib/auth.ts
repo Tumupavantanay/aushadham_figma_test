@@ -6,7 +6,9 @@ import { Resend } from "resend";
 import { db } from "./db";
 import * as schema from "./schema";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "");
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg", schema }),
@@ -14,6 +16,7 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 8,
     sendResetPassword: async ({ user, url }) => {
+      if (!resend) throw new Error("RESEND_API_KEY is not configured");
       void resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL || "Aushadham <noreply@aushadham.com>",
         to: user.email,
