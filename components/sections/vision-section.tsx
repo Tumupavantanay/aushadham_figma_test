@@ -155,7 +155,7 @@ export default function VisionSection() {
 
         let raf: number;
         let visible = true;
-        const speed = 0.8; // px per frame
+        const speed = 0.3; // px per frame
 
         const tick = () => {
             const s = state.current;

@@ -87,7 +87,7 @@ export default function DoctorsCTASection() {
             </p>
 
             <Link
-              href="/signup"
+              href="/for-doctors"
               className="group inline-flex items-center gap-3 px-10 py-4 text-white text-lg font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:scale-[1.02] hover:opacity-90"
               style={{ backgroundColor: "#228573" }}
             >
